@@ -12,13 +12,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _nisnCtrl = TextEditingController();
+  final _identifierCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    _nisnCtrl.dispose();
+    _identifierCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
   }
@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
-    final ok = await auth.login(_nisnCtrl.text.trim(), _passCtrl.text);
+    final ok = await auth.login(_identifierCtrl.text.trim(), _passCtrl.text);
     if (ok && mounted) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     }
@@ -51,9 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     : const SizedBox.shrink(),
               ),
               TextFormField(
-                controller: _nisnCtrl,
-                decoration: const InputDecoration(labelText: 'NISN'),
-                keyboardType: TextInputType.number,
+                controller: _identifierCtrl,
+                decoration: const InputDecoration(labelText: 'NISN / Username'),
                 validator: (v) => v == null || v.isEmpty ? 'Wajib diisi' : null,
               ),
               TextFormField(

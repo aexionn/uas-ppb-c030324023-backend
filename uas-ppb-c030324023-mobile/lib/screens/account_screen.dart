@@ -144,6 +144,9 @@ class _AccountScreenState extends State<AccountScreen> {
               label: const Text('Logout'),
               onPressed: () async {
                 await context.read<AuthProvider>().logout();
+                if (context.mounted) {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                }
               },
             ),
           ],

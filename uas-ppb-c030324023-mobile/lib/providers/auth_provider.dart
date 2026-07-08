@@ -27,12 +27,12 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> login(String nisn, String password) async {
+  Future<bool> login(String identifier, String password) async {
     isLoading = true;
     error = null;
     notifyListeners();
     try {
-      final token = await _service.login(nisn, password);
+      final token = await _service.login(identifier, password);
       await _prefs.setString('token', token);
       account = await _service.getAccount();
       return true;

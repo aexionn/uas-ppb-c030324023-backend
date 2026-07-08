@@ -6,9 +6,9 @@ class AuthService {
 
   AuthService(this._dio);
 
-  Future<String> login(String nisn, String password) async {
+  Future<String> login(String identifier, String password) async {
     final res = await _dio.post('/login', data: {
-      'nisn': nisn,
+      'identifier': identifier,
       'password': password,
     });
     return res.data['token'] as String;

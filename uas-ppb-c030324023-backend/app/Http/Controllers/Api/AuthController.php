@@ -50,7 +50,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nisn' => ['required', 'digits:10'],
+            'identifier' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
@@ -62,11 +62,13 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $account = Account::where('nisn', $request->nisn)->first();
+        $account = Account::where('nisn', $request->identifier)
+            ->orWhere('username', $request->identifier)
+            ->first();
 
         if (! $account || ! Hash::check($request->password, $account->password)) {
             return response()->json([
-                'message' => 'NISN atau kata sandi salah.',
+                'message' => 'NISN/Username atau kata sandi salah.',
                 'errors' => [],
                 'code' => 'INVALID_CREDENTIALS',
             ], 401);
