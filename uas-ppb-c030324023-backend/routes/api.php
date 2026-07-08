@@ -22,6 +22,9 @@ Route::prefix('v1')->group(function () {
         // planned (admin surface is web-only) — remove if that stays true forever.
         Route::middleware('role:admin')->group(function () {
             Route::get('/admin-probe', fn () => response()->json(['ok' => true]));
+            Route::get('/admin/applications', [\App\Http\Controllers\Api\AdminApplicationController::class, 'index']);
+            Route::get('/admin/applications/{application}', [\App\Http\Controllers\Api\AdminApplicationController::class, 'show']);
+            Route::put('/admin/applications/{application}/verdict', [\App\Http\Controllers\Api\AdminApplicationController::class, 'verdict']);
         });
     });
 });

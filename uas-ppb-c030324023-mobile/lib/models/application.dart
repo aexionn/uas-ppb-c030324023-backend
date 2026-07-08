@@ -1,3 +1,6 @@
+import 'account.dart';
+import 'program.dart';
+
 class Application {
   final int id;
   final int programId;
@@ -18,6 +21,8 @@ class Application {
   final int editsRemaining;
   final bool locked;
   final String? editableUntil;
+  final Account? account;
+  final Program? program;
 
   Application({
     required this.id,
@@ -39,6 +44,8 @@ class Application {
     required this.editsRemaining,
     required this.locked,
     this.editableUntil,
+    this.account,
+    this.program,
   });
 
   factory Application.fromJson(Map<String, dynamic> json) => Application(
@@ -61,5 +68,7 @@ class Application {
         editsRemaining: json['edits_remaining'],
         locked: json['locked'],
         editableUntil: json['editable_until'],
+        account: json['account'] != null ? Account.fromJson(json['account']) : null,
+        program: json['program'] != null ? Program.fromJson(json['program']) : null,
       );
 }

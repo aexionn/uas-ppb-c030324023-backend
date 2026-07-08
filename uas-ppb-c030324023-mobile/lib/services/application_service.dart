@@ -97,4 +97,16 @@ class ApplicationService {
     final res = await _dio.put('/application', data: FormData.fromMap(map));
     return Application.fromJson(res.data);
   }
+
+  Future<List<Application>> getAllApplications() async {
+    final res = await _dio.get('/admin/applications');
+    return (res.data as List)
+        .map((e) => Application.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Application> updateVerdict(int id, String status) async {
+    final res = await _dio.put('/admin/applications/$id/verdict', data: {'status': status});
+    return Application.fromJson(res.data['application']);
+  }
 }

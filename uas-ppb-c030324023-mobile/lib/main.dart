@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/auth_provider.dart';
 import 'providers/application_provider.dart';
+import 'providers/admin_application_provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/admin_home_screen.dart';
 import 'screens/login_screen.dart';
 import 'services/auth_service.dart';
 import 'services/application_service.dart';
@@ -24,7 +26,9 @@ void main() async {
   authProvider = AuthProvider(AuthService(dio), prefs);
   await authProvider.restore();
 
-  final applicationProvider = ApplicationProvider(ApplicationService(dio));
+  final applicationService = ApplicationService(dio);
+  final applicationProvider = ApplicationProvider(applicationService);
+  final adminApplicationProvider = AdminApplicationProvider(applicationService);
 
   runApp(
     MultiProvider(
@@ -32,6 +36,8 @@ void main() async {
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider<ApplicationProvider>.value(
             value: applicationProvider),
+        ChangeNotifierProvider<AdminApplicationProvider>.value(
+            value: adminApplicationProvider),
       ],
       child: const App(),
     ),
@@ -43,12 +49,23 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+    
+    Widget homeWidget;
+    if (auth.isLoggedIn) {
+      if (auth.account?.role == 'admin') {
+        homeWidget = const AdminHomeScreen();
+      } else {
+        homeWidget = const HomeScreen();
+      }
+    } else {
+      homeWidget = const LoginScreen();
+    }
+
     return MaterialApp(
       title: 'Pendaftaran Kampus',
       theme: ThemeData(useMaterial3: true),
-      home: context.watch<AuthProvider>().isLoggedIn
-          ? const HomeScreen()
-          : const LoginScreen(),
+      home: homeWidget,
     );
   }
 }
