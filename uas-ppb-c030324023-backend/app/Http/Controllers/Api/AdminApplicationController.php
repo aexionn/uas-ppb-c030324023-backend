@@ -27,12 +27,17 @@ class AdminApplicationController extends Controller
             $query->where('program_id', $programId);
         }
 
-        return response()->json($query->orderByDesc('created_at')->get());
+        $applications = $query->orderByDesc('created_at')->get()->map(function ($app) {
+            return $this->present($app);
+        });
+
+        return response()->json($applications);
     }
 
     public function show(Application $application)
     {
-        return response()->json($application->load(['account', 'program']));
+        $application->load(['account', 'program']);
+        return response()->json($this->present($application));
     }
 
     public function verdict(Request $request, Application $application)
@@ -40,9 +45,22 @@ class AdminApplicationController extends Controller
         $data = $request->validate(['status' => ['required', 'in:accepted,rejected']]);
         $application->update($data);
 
+        $application->load(['account', 'program']);
+
         return response()->json([
             'message' => 'Status diperbarui.',
-            'application' => $application->load(['account', 'program'])
+            'application' => $this->present($application)
         ]);
+    }
+
+    private function present(Application $application): array
+    {
+        return [
+            ...$application->toArray(),
+            'photo_url' => asset('storage/'.$application->photo_path),
+            'edits_remaining' => $application->editsRemaining(),
+            'locked' => $application->isLocked(),
+            'editable_until' => $application->editableUntil(),
+        ];
     }
 }

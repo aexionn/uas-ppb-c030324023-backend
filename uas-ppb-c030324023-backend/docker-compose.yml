@@ -1,19 +1,19 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: campus_admission_mysql
+    container_name: db_uas_ppb_c030324023
     restart: unless-stopped
     ports:
       - "${DB_PORT:-3306}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
-      MYSQL_DATABASE: ${DB_DATABASE:-campus_admission}
+      MYSQL_DATABASE: ${DB_DATABASE:-db_uas_ppb_c030324023}
       MYSQL_USER: ${DB_USERNAME:-laravel}
       MYSQL_PASSWORD: ${DB_PASSWORD:-laravelpassword}
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
